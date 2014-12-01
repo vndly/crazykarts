@@ -25,7 +25,7 @@ public class Box
 	private static final float SPEED_X = 20;
 	private static final float SPEED_Y = 30;
 	
-	private static final int SIZE = 4;
+	public static final int SIZE = 4;
 	
 	public Box(Camera camera, Level level, float x, float y, int color)
 	{
@@ -70,13 +70,13 @@ public class Box
 			
 			this.sprite.y += delta * getSpeed(Box.SPEED_Y);
 			
-			if (this.sprite.y < 0)
+			if (this.sprite.x < 0)
 			{
-				this.sprite.y = 0;
+				this.sprite.x = 0;
 			}
-			else if (this.sprite.y > (Renderer.RESOLUTION_Y - Box.SIZE))
+			else if (this.sprite.x > (Renderer.RESOLUTION_X - Box.SIZE))
 			{
-				this.sprite.y = Renderer.RESOLUTION_Y - Box.SIZE;
+				this.sprite.x = Renderer.RESOLUTION_X - Box.SIZE;
 			}
 		}
 	}

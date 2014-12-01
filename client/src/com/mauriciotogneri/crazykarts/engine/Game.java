@@ -16,6 +16,7 @@ import com.mauriciotogneri.crazykarts.common.objects.Player;
 import com.mauriciotogneri.crazykarts.connection.ClientConnection;
 import com.mauriciotogneri.crazykarts.connection.ClientConnection.ClientConnectionEvent;
 import com.mauriciotogneri.crazykarts.input.InputEvent;
+import com.mauriciotogneri.crazykarts.objects.box.Box;
 import com.mauriciotogneri.crazykarts.objects.box.EnemyBox;
 import com.mauriciotogneri.crazykarts.objects.box.PlayerBox;
 import com.mauriciotogneri.crazykarts.objects.level.Level;
@@ -76,7 +77,7 @@ public class Game implements ClientConnectionEvent, DatagramCommunicationEvent
 		
 		this.level = new Level(this.camera, levelDefinition);
 		
-		this.playerBox = new PlayerBox(this.camera, this.level, vibrator, 0, Renderer.RESOLUTION_Y / 2, this.player.color);
+		this.playerBox = new PlayerBox(this.camera, this.level, vibrator, (Renderer.RESOLUTION_X / 2) - (Box.SIZE / 2), 0, this.player.color);
 		
 		for (Player enemyPlayer : this.enemies)
 		{
@@ -165,7 +166,7 @@ public class Game implements ClientConnectionEvent, DatagramCommunicationEvent
 	
 	private void focusCamera(Camera camera, PlayerBox playerBox)
 	{
-		camera.x = playerBox.getX() - 40;
+		camera.y = playerBox.getY() - 40;
 	}
 	
 	public void restartRace()
