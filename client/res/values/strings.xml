@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Crazy Tunnel</string>
+    <string name="app_name">Crazy Karts</string>
     
     <string name="home_player_name">Player name:</string>
     <string name="home_server_ip">Server IP:</string>
