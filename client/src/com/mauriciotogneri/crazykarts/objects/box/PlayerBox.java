@@ -42,7 +42,7 @@ public class PlayerBox extends Box
 	}
 	
 	@Override
-	public void restart()
+	public synchronized void restart()
 	{
 		super.restart();
 		

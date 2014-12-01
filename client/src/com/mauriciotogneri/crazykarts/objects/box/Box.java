@@ -15,10 +15,8 @@ public class Box
 	private final float initialX;
 	private final float initialY;
 	
-	private final Object lockSprite = new Object();
 	private final Sprite sprite;
 	
-	private final Object lockDirection = new Object();
 	private boolean left = false;
 	private boolean right = false;
 	
@@ -41,13 +39,10 @@ public class Box
 		this.sprite = new Sprite(square, x, y);
 	}
 	
-	public void restart()
+	public synchronized void restart()
 	{
-		synchronized (this.lockSprite)
-		{
-			this.sprite.x = this.initialX;
-			this.sprite.y = this.initialY;
-		}
+		this.sprite.x = this.initialX;
+		this.sprite.y = this.initialY;
 		
 		this.finished = false;
 		
@@ -55,88 +50,62 @@ public class Box
 		this.right = false;
 	}
 	
-	protected void updatePosition(double delta)
+	protected synchronized void updatePosition(double delta)
 	{
-		synchronized (this.lockSprite)
+		if (this.left)
 		{
-			if (this.left)
-			{
-				this.sprite.x -= delta * getSpeed(Box.SPEED_X);
-			}
-			else if (this.right)
-			{
-				this.sprite.x += delta * getSpeed(Box.SPEED_X);
-			}
-			
-			this.sprite.y += delta * getSpeed(Box.SPEED_Y);
-			
-			if (this.sprite.x < 0)
-			{
-				this.sprite.x = 0;
-			}
-			else if (this.sprite.x > (Renderer.RESOLUTION_X - Box.SIZE))
-			{
-				this.sprite.x = Renderer.RESOLUTION_X - Box.SIZE;
-			}
+			this.sprite.x -= delta * getSpeed(Box.SPEED_X);
 		}
-	}
-	
-	public boolean finished()
-	{
-		if (this.finished)
+		else if (this.right)
 		{
-			return this.finished;
+			this.sprite.x += delta * getSpeed(Box.SPEED_X);
 		}
 		
-		synchronized (this.lockSprite)
+		this.sprite.y += delta * getSpeed(Box.SPEED_Y);
+		
+		if (this.sprite.x < 0)
 		{
-			return (this.finished = this.level.finished(this.sprite));
+			this.sprite.x = 0;
+		}
+		else if (this.sprite.x > (Renderer.RESOLUTION_X - Box.SIZE))
+		{
+			this.sprite.x = Renderer.RESOLUTION_X - Box.SIZE;
 		}
 	}
 	
-	public float getX()
+	public synchronized boolean finished()
 	{
-		synchronized (this.lockSprite)
+		return this.finished || (this.finished = this.level.finished(this.sprite));
+	}
+	
+	public synchronized float getX()
+	{
+		return this.sprite.x;
+	}
+	
+	public synchronized float getY()
+	{
+		return this.sprite.y;
+	}
+	
+	protected synchronized void updatePosition(float x, float y)
+	{
+		if (y > this.sprite.y)
 		{
-			return this.sprite.x;
+			this.sprite.x = x;
+			this.sprite.y = y;
 		}
 	}
 	
-	public float getY()
+	protected synchronized void updateDirection(boolean left, boolean right)
 	{
-		synchronized (this.lockSprite)
-		{
-			return this.sprite.y;
-		}
+		this.left = left;
+		this.right = right;
 	}
 	
-	protected void updatePosition(float x, float y)
+	protected synchronized boolean collide()
 	{
-		synchronized (this.lockSprite)
-		{
-			if (y > this.sprite.y)
-			{
-				this.sprite.x = x;
-				this.sprite.y = y;
-			}
-		}
-	}
-	
-	protected void updateDirection(boolean left, boolean right)
-	{
-		synchronized (this.lockDirection)
-		{
-			this.left = left;
-			this.right = right;
-		}
-	}
-	
-	protected boolean collide()
-	{
-		synchronized (this.lockSprite)
-		{
-			return (this.level.collide(this.sprite));
-		}
+		return (this.level.collide(this.sprite));
 	}
 	
 	private float getSpeed(float baseSpeed)
@@ -151,14 +120,11 @@ public class Box
 		return result;
 	}
 	
-	public void render(Renderer renderer)
+	public synchronized void render(Renderer renderer)
 	{
-		synchronized (this.lockSprite)
+		if (this.camera.isInside(this.sprite))
 		{
-			if (this.camera.isInside(this.sprite))
-			{
-				this.sprite.render(renderer);
-			}
+			this.sprite.render(renderer);
 		}
 	}
 }
