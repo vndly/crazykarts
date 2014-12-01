@@ -20,16 +20,15 @@ import com.mauriciotogneri.crazykarts.util.FileUtils;
 
 public class LevelDefinition
 {
-	private final int length;
 	private final int laps;
+	private final int length;
 	
 	private final List<Sprite> base = new ArrayList<Sprite>();
 	private final List<Sprite> collisionableSprites = new ArrayList<Sprite>();
 	private final List<Sprite> nonCollisionableSprites = new ArrayList<Sprite>();
 	
-	public static final int WALL_COLOR = Color.argb(255, 90, 110, 120);
-	
 	private static final int WALL_WIDTH = 4;
+	private static final int WALL_COLOR = Color.argb(255, 60, 60, 60);
 	
 	public LevelDefinition(Context context, int mapId, int laps)
 	{
@@ -155,7 +154,7 @@ public class LevelDefinition
 	
 	public boolean finished(Sprite sprite)
 	{
-		return (sprite.x > (this.length * this.laps));
+		return (sprite.y > (this.length * this.laps));
 	}
 	
 	public void build()
@@ -163,17 +162,17 @@ public class LevelDefinition
 		for (int i = 0; i < this.laps; i++)
 		{
 			Shape startLineShape = new Rectangle(Renderer.RESOLUTION_X, 1, Color.argb(255, 200, 200, 200));
-			Sprite startLine = new Sprite(startLineShape, this.length * i, 0);
+			Sprite startLine = new Sprite(startLineShape, 0, this.length * i);
 			this.nonCollisionableSprites.add(startLine);
 			
 			for (Sprite sprite : this.base)
 			{
-				this.collisionableSprites.add(sprite.copyAt(sprite.x + (this.length * i), sprite.y));
+				this.collisionableSprites.add(sprite.copyAt(sprite.x, sprite.y + (this.length * i)));
 			}
 		}
 		
 		Shape lastStartLineShape = new Rectangle(Renderer.RESOLUTION_X, 1, Color.argb(255, 200, 200, 200));
-		Sprite lastStartLine = new Sprite(lastStartLineShape, this.length * this.laps, 0);
+		Sprite lastStartLine = new Sprite(lastStartLineShape, 0, this.length * this.laps);
 		this.nonCollisionableSprites.add(lastStartLine);
 	}
 }
