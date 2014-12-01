@@ -55,7 +55,7 @@ public class RankingAdapter extends ArrayAdapter<RankingRow>
 		}
 		else
 		{
-			timeDifference.setText("+" + formatTime(rankingRow.timeDifference));
+			timeDifference.setText("+" + format(rankingRow.timeDifference, "#0.000"));
 		}
 		
 		return convertView;

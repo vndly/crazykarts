@@ -106,7 +106,7 @@ public class Box
 	{
 		synchronized (this.lock)
 		{
-			if (x > this.sprite.x)
+			if (y > this.sprite.y)
 			{
 				this.sprite.x = x;
 				this.sprite.y = y;
