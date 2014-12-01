@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import com.mauriciotogneri.crazykarts.common.messages.MessageReader;
 import com.mauriciotogneri.crazykarts.common.messages.Messages;
 import com.mauriciotogneri.crazykarts.common.messages.Messages.PlayerConnect;
@@ -30,8 +31,7 @@ public class Game implements ServerEvent, DatagramCommunicationEvent
 	
 	private int playersReady = 0;
 	
-	private final Object playerIdLock = new Object();
-	private byte nextPlayerId = 1;
+	private final AtomicInteger nextPlayerId = new AtomicInteger(0);
 	
 	private final Object colorLock = new Object();
 	private final List<Integer> colorIndex = new ArrayList<Integer>();
@@ -115,18 +115,6 @@ public class Game implements ServerEvent, DatagramCommunicationEvent
 		return result;
 	}
 	
-	public byte getPlayerId()
-	{
-		byte result = 0;
-		
-		synchronized (this.playerIdLock)
-		{
-			result = this.nextPlayerId++;
-		}
-		
-		return result;
-	}
-	
 	public Player processPlayerConnect(Client client, PlayerConnect playerConnect)
 	{
 		Player result = null;
@@ -135,7 +123,7 @@ public class Game implements ServerEvent, DatagramCommunicationEvent
 		{
 			if (this.registeredPlayers.size() < this.numberOfPlayers)
 			{
-				byte id = getPlayerId();
+				int id = this.nextPlayerId.incrementAndGet();
 				int color = getPlayerColor();
 				
 				result = new Player(id, playerConnect.name, color);
