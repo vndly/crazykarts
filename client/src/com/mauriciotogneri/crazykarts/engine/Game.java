@@ -81,7 +81,7 @@ public class Game implements ClientConnectionEvent, DatagramCommunicationEvent
 		
 		for (Player enemyPlayer : this.enemies)
 		{
-			EnemyBox box = new EnemyBox(this.camera, this.level, 0, Renderer.RESOLUTION_Y / 2, enemyPlayer.color);
+			EnemyBox box = new EnemyBox(this.camera, this.level, (Renderer.RESOLUTION_X / 2) - (Box.SIZE / 2), 0, enemyPlayer.color);
 			this.enemyBoxes.put(enemyPlayer.id, box);
 		}
 	}
