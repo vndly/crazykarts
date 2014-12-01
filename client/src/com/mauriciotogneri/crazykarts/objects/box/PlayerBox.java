@@ -22,9 +22,7 @@ public class PlayerBox extends Box
 	{
 		if (!finished())
 		{
-			left(input.left);
-			right(input.right);
-			
+			updateDirection(input.left, input.right);
 			updatePosition(delta);
 			
 			if (collide())

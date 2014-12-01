@@ -15,12 +15,14 @@ public class Box
 	private final float initialX;
 	private final float initialY;
 	
+	private final Object lockSprite = new Object();
 	private final Sprite sprite;
 	
+	private final Object lockDirection = new Object();
 	private boolean left = false;
 	private boolean right = false;
 	
-	private final Object lock = new Object();
+	private boolean finished = false;
 	
 	private static final float SPEED_X = 20;
 	private static final float SPEED_Y = 30;
@@ -41,23 +43,21 @@ public class Box
 	
 	public void restart()
 	{
-		this.sprite.x = this.initialX;
-		this.sprite.y = this.initialY;
-	}
-	
-	protected void left(boolean value)
-	{
-		this.left = value;
-	}
-	
-	protected void right(boolean value)
-	{
-		this.right = value;
+		synchronized (this.lockSprite)
+		{
+			this.sprite.x = this.initialX;
+			this.sprite.y = this.initialY;
+		}
+		
+		this.finished = false;
+		
+		this.left = false;
+		this.right = false;
 	}
 	
 	protected void updatePosition(double delta)
 	{
-		synchronized (this.lock)
+		synchronized (this.lockSprite)
 		{
 			if (this.left)
 			{
@@ -83,12 +83,20 @@ public class Box
 	
 	public boolean finished()
 	{
-		return this.level.finished(this.sprite);
+		if (this.finished)
+		{
+			return this.finished;
+		}
+		
+		synchronized (this.lockSprite)
+		{
+			return (this.finished = this.level.finished(this.sprite));
+		}
 	}
 	
 	public float getX()
 	{
-		synchronized (this.lock)
+		synchronized (this.lockSprite)
 		{
 			return this.sprite.x;
 		}
@@ -96,7 +104,7 @@ public class Box
 	
 	public float getY()
 	{
-		synchronized (this.lock)
+		synchronized (this.lockSprite)
 		{
 			return this.sprite.y;
 		}
@@ -104,7 +112,7 @@ public class Box
 	
 	protected void updatePosition(float x, float y)
 	{
-		synchronized (this.lock)
+		synchronized (this.lockSprite)
 		{
 			if (y > this.sprite.y)
 			{
@@ -114,9 +122,21 @@ public class Box
 		}
 	}
 	
+	protected void updateDirection(boolean left, boolean right)
+	{
+		synchronized (this.lockDirection)
+		{
+			this.left = left;
+			this.right = right;
+		}
+	}
+	
 	protected boolean collide()
 	{
-		return (this.level.collide(this.sprite));
+		synchronized (this.lockSprite)
+		{
+			return (this.level.collide(this.sprite));
+		}
 	}
 	
 	private float getSpeed(float baseSpeed)
@@ -133,7 +153,7 @@ public class Box
 	
 	public void render(Renderer renderer)
 	{
-		synchronized (this.lock)
+		synchronized (this.lockSprite)
 		{
 			if (this.camera.isInside(this.sprite))
 			{

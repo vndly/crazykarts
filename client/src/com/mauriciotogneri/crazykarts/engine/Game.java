@@ -128,14 +128,19 @@ public class Game implements ClientConnectionEvent, DatagramCommunicationEvent
 	{
 		this.playerBox.update(delta, input);
 		
-		broadcastBoxPosition(this.player, this.playerBox, input);
+		boolean playerFinished = this.playerBox.finished();
+		
+		if (!playerFinished)
+		{
+			broadcastBoxPosition(this.player, this.playerBox, input);
+		}
 		
 		for (int i = 0, size = this.enemyBoxes.size(); i < size; i++)
 		{
 			this.enemyBoxes.valueAt(i).update(delta);
 		}
 		
-		if (this.playerBox.finished())
+		if (playerFinished)
 		{
 			this.playerBox.pause();
 			
@@ -194,18 +199,10 @@ public class Game implements ClientConnectionEvent, DatagramCommunicationEvent
 	private void broadcastBoxPosition(Player player, PlayerBox box, InputEvent input)
 	{
 		ConnectionUtils.send(this.connection, this.udpAddress, this.udpPort, Messages.PlayerBoxPosition.create(player.id, box.getX(), box.getY(), input.left, input.right));
-		
-		// ConnectionUtils.send(this.clientConnection, message);
 	}
-	
-	// private long lastTime = (System.nanoTime() / 1000000);
 	
 	private void updateBoxPosition(PlayerBoxPosition playerBoxPosition)
 	{
-		// long now = (System.nanoTime() / 1000000);
-		// System.out.println("TEST " + (now - this.lastTime) + " = " + playerBoxPosition.x);
-		// this.lastTime = now;
-		
 		EnemyBox box = this.enemyBoxes.get(playerBoxPosition.playerId);
 		
 		if (box != null)
