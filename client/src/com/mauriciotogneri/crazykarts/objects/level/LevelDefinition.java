@@ -52,7 +52,7 @@ public class LevelDefinition
 	{
 		Element element = (Element)root;
 		
-		return Integer.parseInt(element.getAttribute("width"));
+		return Integer.parseInt(element.getAttribute("height"));
 	}
 	
 	private void readMap(Node root)
