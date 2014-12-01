@@ -195,7 +195,8 @@ public class Messages
 	public static class PlayerBoxPosition
 	{
 		public final byte playerId;
-		public final boolean jumping;
+		public final boolean left;
+		public final boolean right;
 		public final float x;
 		public final float y;
 		
@@ -204,7 +205,8 @@ public class Messages
 		public PlayerBoxPosition(MessageReader reader)
 		{
 			this.playerId = reader.getByte();
-			this.jumping = reader.getBoolean();
+			this.left = reader.getBoolean();
+			this.right = reader.getBoolean();
 			this.x = reader.getFloat();
 			this.y = reader.getFloat();
 		}
@@ -214,19 +216,21 @@ public class Messages
 			MessageWriter writer = new MessageWriter();
 			writer.putByte(PlayerBoxPosition.CODE);
 			writer.putByte(this.playerId);
-			writer.putBoolean(this.jumping);
+			writer.putBoolean(this.left);
+			writer.putBoolean(this.right);
 			writer.putFloat(this.x);
 			writer.putFloat(this.y);
 			
 			return writer.getMessage();
 		}
 		
-		public static byte[] create(byte playerId, float x, float y, boolean jumping)
+		public static byte[] create(byte playerId, float x, float y, boolean left, boolean right)
 		{
 			MessageWriter writer = new MessageWriter();
 			writer.putByte(PlayerBoxPosition.CODE);
 			writer.putByte(playerId);
-			writer.putBoolean(jumping);
+			writer.putBoolean(left);
+			writer.putBoolean(right);
 			writer.putFloat(x);
 			writer.putFloat(y);
 			
