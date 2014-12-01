@@ -22,10 +22,8 @@ public class PlayerBox extends Box
 	{
 		if (!finished())
 		{
-			if (input.jump)
-			{
-				jump();
-			}
+			left(input.left);
+			right(input.right);
 			
 			updatePosition(delta);
 			

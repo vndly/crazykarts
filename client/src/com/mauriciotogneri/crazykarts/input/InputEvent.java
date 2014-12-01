@@ -2,18 +2,18 @@ package com.mauriciotogneri.crazykarts.input;
 
 public class InputEvent
 {
-	public boolean jump = false;
-	public boolean action = false;
+	public boolean left = false;
+	public boolean right = false;
 	
 	public void press(float x, int resolutionX)
 	{
 		if (x < (resolutionX / 2))
 		{
-			this.jump = true;
+			this.left = true;
 		}
 		else
 		{
-			this.action = true;
+			this.right = true;
 		}
 	}
 	
@@ -21,17 +21,17 @@ public class InputEvent
 	{
 		if (x < (resolutionX / 2))
 		{
-			this.jump = false;
+			this.left = false;
 		}
 		else
 		{
-			this.action = false;
+			this.right = false;
 		}
 	}
 	
 	public void clear()
 	{
-		this.jump = false;
-		this.action = false;
+		this.left = false;
+		this.right = false;
 	}
 }

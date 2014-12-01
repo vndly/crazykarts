@@ -16,19 +16,14 @@ public class Box
 	private final float initialY;
 	
 	private final Sprite sprite;
-	private float acceleration = 0;
+	
+	private boolean left = false;
+	private boolean right = false;
 	
 	private final Object lock = new Object();
 	
-	private static final float SLOW_RATIO = 1f; // 0.2f;
-	
-	private static final float GRAVITY = 1 * Box.SLOW_RATIO;
-	protected static final float JUMP_FORCE = 3;
-	
-	private static final float SPEED = 30 * Box.SLOW_RATIO;
-	
-	private static final float MAX_ACCELERATION_UP = 30 * Box.SLOW_RATIO;
-	private static final float MAX_ACCELERATION_DOWN = 30 * Box.SLOW_RATIO;
+	private static final float SPEED_X = 20;
+	private static final float SPEED_Y = 30;
 	
 	private static final int SIZE = 4;
 	
@@ -50,28 +45,30 @@ public class Box
 		this.sprite.y = this.initialY;
 	}
 	
-	protected void jump()
+	protected void left(boolean value)
 	{
-		this.acceleration += Box.JUMP_FORCE;
+		this.left = value;
+	}
+	
+	protected void right(boolean value)
+	{
+		this.right = value;
 	}
 	
 	protected void updatePosition(double delta)
 	{
-		this.acceleration -= Box.GRAVITY;
-		
-		if (this.acceleration > Box.MAX_ACCELERATION_UP)
-		{
-			this.acceleration = Box.MAX_ACCELERATION_UP;
-		}
-		else if (this.acceleration < -Box.MAX_ACCELERATION_DOWN)
-		{
-			this.acceleration = -Box.MAX_ACCELERATION_DOWN;
-		}
-		
 		synchronized (this.lock)
 		{
-			this.sprite.x += delta * getSpeed();
-			this.sprite.y += delta * this.acceleration;
+			if (this.left)
+			{
+				this.sprite.x -= delta * getSpeed(Box.SPEED_X);
+			}
+			else if (this.right)
+			{
+				this.sprite.x += delta * getSpeed(Box.SPEED_X);
+			}
+			
+			this.sprite.y += delta * getSpeed(Box.SPEED_Y);
 			
 			if (this.sprite.y < 0)
 			{
@@ -122,9 +119,9 @@ public class Box
 		return (this.level.collide(this.sprite));
 	}
 	
-	private float getSpeed()
+	private float getSpeed(float baseSpeed)
 	{
-		float result = Box.SPEED;
+		float result = baseSpeed;
 		
 		if (collide())
 		{

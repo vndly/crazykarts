@@ -29,9 +29,7 @@ public class LevelDefinition
 	
 	public static final int WALL_COLOR = Color.argb(255, 90, 110, 120);
 	
-	private static final int WALL_HEIGHT = 5;
-	
-	public static final int BLOCK_SIZE = 5;
+	private static final int WALL_WIDTH = 4;
 	
 	public LevelDefinition(Context context, int mapId, int laps)
 	{
@@ -40,12 +38,12 @@ public class LevelDefinition
 		this.laps = laps;
 		this.length = getLength(root);
 		
-		Shape wall = new Rectangle((this.length * laps) + (Renderer.RESOLUTION_X * 2), LevelDefinition.WALL_HEIGHT, LevelDefinition.WALL_COLOR);
-		Sprite wallBottom = new Sprite(wall, -Renderer.RESOLUTION_X, 0);
-		Sprite wallTop = new Sprite(wall, -Renderer.RESOLUTION_X, Renderer.RESOLUTION_Y - LevelDefinition.WALL_HEIGHT);
+		Shape wall = new Rectangle(LevelDefinition.WALL_WIDTH, (this.length * laps) + (Renderer.RESOLUTION_Y * 2), LevelDefinition.WALL_COLOR);
+		Sprite wallLeft = new Sprite(wall, 0, -Renderer.RESOLUTION_Y);
+		Sprite wallRight = new Sprite(wall, Renderer.RESOLUTION_X - LevelDefinition.WALL_WIDTH, -Renderer.RESOLUTION_Y);
 		
-		add(wallTop);
-		add(wallBottom);
+		add(wallLeft);
+		add(wallRight);
 		
 		readMap(root);
 	}
@@ -92,7 +90,7 @@ public class LevelDefinition
 					Element element = (Element)node;
 					String id = element.getAttribute("id");
 					
-					if ((!id.equals("wallTop")) && (!id.equals("wallBottom")))
+					if ((!id.equals("wallLeft")) && (!id.equals("wallRight")))
 					{
 						float width = Float.parseFloat(element.getAttribute("width"));
 						float height = Float.parseFloat(element.getAttribute("height"));
@@ -164,7 +162,7 @@ public class LevelDefinition
 	{
 		for (int i = 0; i < this.laps; i++)
 		{
-			Shape startLineShape = new Rectangle(1, Renderer.RESOLUTION_Y, Color.argb(255, 200, 200, 200));
+			Shape startLineShape = new Rectangle(Renderer.RESOLUTION_X, 1, Color.argb(255, 200, 200, 200));
 			Sprite startLine = new Sprite(startLineShape, this.length * i, 0);
 			this.nonCollisionableSprites.add(startLine);
 			
@@ -174,7 +172,7 @@ public class LevelDefinition
 			}
 		}
 		
-		Shape lastStartLineShape = new Rectangle(1, Renderer.RESOLUTION_Y, Color.argb(255, 200, 200, 200));
+		Shape lastStartLineShape = new Rectangle(Renderer.RESOLUTION_X, 1, Color.argb(255, 200, 200, 200));
 		Sprite lastStartLine = new Sprite(lastStartLineShape, this.length * this.laps, 0);
 		this.nonCollisionableSprites.add(lastStartLine);
 	}

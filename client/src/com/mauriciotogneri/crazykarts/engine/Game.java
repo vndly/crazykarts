@@ -72,7 +72,7 @@ public class Game implements ClientConnectionEvent, DatagramCommunicationEvent
 		this.camera = new Camera(Renderer.RESOLUTION_X, Renderer.RESOLUTION_Y);
 		
 		Vibrator vibrator = gameScreen.getVibrator();
-		LevelDefinition levelDefinition = getLevelDefinition(gameScreen.getContext(), R.raw.map4, laps);
+		LevelDefinition levelDefinition = getLevelDefinition(gameScreen.getContext(), R.raw.map, laps);
 		
 		this.level = new Level(this.camera, levelDefinition);
 		
@@ -192,14 +192,9 @@ public class Game implements ClientConnectionEvent, DatagramCommunicationEvent
 	
 	private void broadcastBoxPosition(Player player, PlayerBox box, InputEvent input)
 	{
-		// if (this.lastInput != input.jump)
-		// {
-		// this.lastInput = input.jump;
-		
-		ConnectionUtils.send(this.connection, this.udpAddress, this.udpPort, Messages.PlayerBoxPosition.create(player.id, box.getX(), box.getY(), input.jump));
+		ConnectionUtils.send(this.connection, this.udpAddress, this.udpPort, Messages.PlayerBoxPosition.create(player.id, box.getX(), box.getY(), input.left, input.right));
 		
 		// ConnectionUtils.send(this.clientConnection, message);
-		// }
 	}
 	
 	// private long lastTime = (System.nanoTime() / 1000000);
@@ -214,7 +209,7 @@ public class Game implements ClientConnectionEvent, DatagramCommunicationEvent
 		
 		if (box != null)
 		{
-			box.update(playerBoxPosition.x, playerBoxPosition.y, playerBoxPosition.jumping);
+			box.update(playerBoxPosition.x, playerBoxPosition.y, playerBoxPosition.left, playerBoxPosition.right);
 		}
 	}
 	

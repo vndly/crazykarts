@@ -5,7 +5,10 @@ import com.mauriciotogneri.crazykarts.objects.level.Level;
 
 public class EnemyBox extends Box
 {
-	private boolean jumping;
+	private boolean left = false;
+	private boolean right = false;
+	
+	private final Object lock = new Object();
 	
 	public EnemyBox(Camera camera, Level level, float x, float y, int color)
 	{
@@ -16,9 +19,10 @@ public class EnemyBox extends Box
 	{
 		if (!finished())
 		{
-			if (this.jumping)
+			synchronized (this.lock)
 			{
-				jump();
+				left(this.left);
+				right(this.right);
 			}
 			
 			updatePosition(delta);
@@ -30,12 +34,20 @@ public class EnemyBox extends Box
 	{
 		super.restart();
 		
-		this.jumping = false;
+		synchronized (this.lock)
+		{
+			this.left = false;
+			this.right = false;
+		}
 	}
 	
-	public void update(float x, float y, boolean jumping)
+	public void update(float x, float y, boolean left, boolean right)
 	{
-		this.jumping = jumping;
+		synchronized (this.lock)
+		{
+			this.left = left;
+			this.right = right;
+		}
 		
 		updatePosition(x, y);
 	}

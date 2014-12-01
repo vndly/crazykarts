@@ -40,8 +40,8 @@ public class Renderer implements android.opengl.GLSurfaceView.Renderer
 	private RendererStatus state = null;
 	private final Object stateLock = new Object();
 	
-	public static final int RESOLUTION_X = 100;
-	public static final int RESOLUTION_Y = 60;
+	public static final int RESOLUTION_X = 60;
+	public static final int RESOLUTION_Y = 100;
 	
 	// renderer status
 	private enum RendererStatus
