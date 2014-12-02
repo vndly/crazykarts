@@ -20,9 +20,14 @@ public class Box
 	private boolean left = false;
 	private boolean right = false;
 	
+	private float accelerationX = 0;
+	
 	private boolean finished = false;
 	
-	private static final float SPEED_X = 20;
+	private static final float ACCELERATION_X_RATE = 100;
+	private static final float DECELERATION_X_RATE = 0.1f;
+	private static final float MAX_ACCELERATION_X = 40;
+	
 	private static final float SPEED_Y = 30;
 	
 	public static final int SIZE = 4;
@@ -48,19 +53,35 @@ public class Box
 		
 		this.left = false;
 		this.right = false;
+		
+		this.accelerationX = 0;
 	}
 	
 	protected synchronized void updatePosition(double delta)
 	{
 		if (this.left)
 		{
-			this.sprite.x -= delta * getSpeed(Box.SPEED_X);
+			this.accelerationX -= Box.ACCELERATION_X_RATE * delta;
 		}
 		else if (this.right)
 		{
-			this.sprite.x += delta * getSpeed(Box.SPEED_X);
+			this.accelerationX += Box.ACCELERATION_X_RATE * delta;
+		}
+		else
+		{
+			this.accelerationX *= Math.pow(Box.DECELERATION_X_RATE, delta);
 		}
 		
+		if (this.accelerationX > Box.MAX_ACCELERATION_X)
+		{
+			this.accelerationX = Box.MAX_ACCELERATION_X;
+		}
+		else if (this.accelerationX < -Box.MAX_ACCELERATION_X)
+		{
+			this.accelerationX = -Box.MAX_ACCELERATION_X;
+		}
+		
+		this.sprite.x += getSpeed(this.accelerationX * delta);
 		this.sprite.y += delta * getSpeed(Box.SPEED_Y);
 		
 		if (this.sprite.x < 0)
@@ -108,13 +129,13 @@ public class Box
 		return (this.level.collide(this.sprite));
 	}
 	
-	private float getSpeed(float baseSpeed)
+	private double getSpeed(double baseSpeed)
 	{
-		float result = baseSpeed;
+		double result = baseSpeed;
 		
 		if (collide())
 		{
-			result *= 0.5f;
+			result *= 0.5;
 		}
 		
 		return result;
